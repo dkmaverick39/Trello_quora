@@ -96,9 +96,10 @@
         <profile>
             <id>setup</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
+             <pluginManagement> 
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -122,7 +123,9 @@
                         </executions>
                     </plugin>
                 </plugins>
+              </pluginManagement> 
             </build>
+         
         </profile>
     </profiles>
 
