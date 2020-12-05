@@ -51,8 +51,7 @@
 
 
     <build>
-        <pluginManagement>
-            <plugins>
+           <plugins>
                 <plugin>
                     <groupId>io.swagger</groupId>
                     <artifactId>swagger-codegen-maven-plugin</artifactId>
@@ -72,11 +71,7 @@
                         </configOptions>
                     </configuration>
                 </plugin>
-            <!-- </plugins>
-        </pluginManagement> -->
-
-
-        <!-- <plugins> -->
+             
             <plugin>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-codegen-maven-plugin</artifactId>
@@ -150,8 +145,6 @@
                 </executions>
             </plugin>
         </plugins>
-        
-      </pluginManagement>   
         
     </build>
 
