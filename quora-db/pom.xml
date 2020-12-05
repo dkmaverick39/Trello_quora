@@ -27,6 +27,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
         <plugins>
 
             <plugin>
@@ -121,7 +122,6 @@
                     </plugin>
                 </plugins>
             </build>
-         
         </profile>
     </profiles>
 
