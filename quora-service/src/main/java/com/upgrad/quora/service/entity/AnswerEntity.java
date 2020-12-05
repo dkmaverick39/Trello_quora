@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @Table(name="answer")
 @NamedQueries ({
     @NamedQuery(name = "answerById", query = "select u from AnswerEntity u where u.id = :id"),
-    @NamedQuery(name = "answerByQuestionId", query = "select u from AnswerEntity u where u.question.id = :questionId"),
+    //@NamedQuery(name = "answerByQuestionId", query = "select u from AnswerEntity u where u.question.id = :questionId"),
     @NamedQuery(name = "deleteAnswerById", query = "delete from AnswerEntity u where u.id = :id")
 })
 public class AnswerEntity {
@@ -28,7 +28,7 @@ public class AnswerEntity {
 	 @Id
 	 @Column(name = "ID")
 	 @GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private int id;
+	 private Integer id;
 	 
 	 
 	 @Column(name = "UUID")
