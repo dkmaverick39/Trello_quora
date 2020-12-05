@@ -19,9 +19,9 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name="answer")
 @NamedQueries ({
-    @NamedQuery(name = "answerById", query = "select u from AnswerEntity u where u.id = :id"),
+    @NamedQuery(name = "answerByUUId", query = "select u from AnswerEntity u where u.uuid = :uuid"),
     //@NamedQuery(name = "answerByQuestionId", query = "select u from AnswerEntity u where u.question.id = :questionId"),
-    @NamedQuery(name = "deleteAnswerById", query = "delete from AnswerEntity u where u.id = :id")
+    @NamedQuery(name = "deleteAnswerByUUId", query = "delete from AnswerEntity u where u.uuid = :uuid")
 })
 public class AnswerEntity {
 
@@ -46,23 +46,13 @@ public class AnswerEntity {
 	 private ZonedDateTime createdDate;
 
 	 
-//	 @ManyToOne
-//	 @JoinColumn(name = "USER_ID")
-//	 private UserEntity user;
-//	 
+	 @ManyToOne
+	 @JoinColumn(name = "USER_ID")
+	 private UserEntity user;
+	 
 //	 @ManyToOne
 //	 @JoinColumn(name = "QUESTION_ID")
 //	 private QuestionEntity question;
-
-
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 
 	public String getUuid() {
@@ -92,6 +82,21 @@ public class AnswerEntity {
 
 	public void setCreatedDate(ZonedDateTime createdDate) {
 		this.createdDate = createdDate;
+	}
+
+
+	public UserEntity getUser() {
+		return user;
+	}
+
+
+	public void setUser(UserEntity user) {
+		this.user = user;
+	}
+
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 

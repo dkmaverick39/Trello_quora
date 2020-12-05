@@ -17,18 +17,18 @@ public class AnswerDao {
 	private EntityManager entityManager;
 
 	
-	public AnswerEntity getAnswerById(final String answerId) {
+	public AnswerEntity getAnswerByUUId(final String answerByUUId) {
 		try {
-			return entityManager.createNamedQuery("answerById", AnswerEntity.class).setParameter("id", answerId)
+			return entityManager.createNamedQuery("answerByUUId", AnswerEntity.class).setParameter("uuid", answerByUUId)
 					.getSingleResult();
 		} catch (NoResultException nre) {
 			return null;
 		}
 	}
 
-	public int deleteAnswerById(final String answerId) {
+	public int deleteAnswerByUUId(final String answerUUId) {
 		try {
-			return entityManager.createNamedQuery("deleteAnswerById", AnswerEntity.class).setParameter("id", answerId)
+			return entityManager.createNamedQuery("deleteAnswerByUUId", AnswerEntity.class).setParameter("uuid", answerUUId)
 					.executeUpdate();
 		} catch (NoResultException nre) {
 			return -1;
@@ -36,9 +36,9 @@ public class AnswerDao {
 	}
 
 	
-	public List<AnswerEntity> getAllAnswersByQuestionId(final String questionId) {
+	public List<AnswerEntity> getAllAnswersByQuestionUUId(final String questionUUId) {
 		try {
-			 List<AnswerEntity> resultList = entityManager.createNamedQuery("answerByQuestionId", AnswerEntity.class).setParameter("questionId", questionId)
+			 List<AnswerEntity> resultList = entityManager.createNamedQuery("answerByQuestionUUId", AnswerEntity.class).setParameter("questionUUId", questionUUId)
 					.getResultList(); 
 			 return resultList;
 		} catch (NoResultException nre) {
