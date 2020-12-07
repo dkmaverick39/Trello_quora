@@ -22,7 +22,9 @@ import com.upgrad.quora.api.model.AnswerRequest;
 import com.upgrad.quora.api.model.AnswerResponse;
 import com.upgrad.quora.service.business.AnswerService;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.QuestionNotFoundException;
 
 @RestController
 @RequestMapping("/")
@@ -36,8 +38,8 @@ public class AnswerController {
 	@RequestMapping(value = "/question/{questionId}/answer/create", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerResponse> createAnswer(@RequestHeader("authorization") final String accessToken,
-			@PathVariable("questionId") String questionUUId, @RequestBody AnswerRequest answerRequest)
-			throws AuthorizationFailedException {
+			@PathVariable("questionId") String questionUUId, final AnswerRequest answerRequest)
+			throws AuthorizationFailedException, QuestionNotFoundException { 
 
 		String answer = answerRequest.getAnswer();
 		
@@ -55,12 +57,12 @@ public class AnswerController {
 			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerEditResponse> editAnswerContent(
 			@RequestHeader("authorization") final String accessToken, @PathVariable("answerId") String answerId,
-			@RequestBody AnswerEditRequest editRequest) throws AuthorizationFailedException {
+			final AnswerEditRequest editRequest) throws AuthorizationFailedException, AnswerNotFoundException {
 		  
 		 String content = editRequest.getContent(); 
 		 AnswerEntity editAnswerContent = answerService.editAnswerContent(accessToken, answerId, content);
 		 
-		 AnswerEditResponse  editResponse = new AnswerEditResponse();
+		 AnswerEditResponse  editResponse = new AnswerEditResponse(); 
 		 editResponse.setId(editAnswerContent.getUuid()); 
 		 editResponse.setStatus("ANSWER EDITED"); 
 
@@ -71,9 +73,9 @@ public class AnswerController {
 	 
 	 @RequestMapping(value="/answer/delete/{answerId}" , method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	 public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@RequestHeader("authorization") final String accessToken,
-			 @PathVariable("answerId") String answerUUId) throws AuthorizationFailedException {
+			 @PathVariable("answerId") String answerUUId) throws AuthorizationFailedException, AnswerNotFoundException {
 		 
-		 answerService.deleteAnswer(accessToken,answerUUId); 
+		 answerService.deleteAnswer(accessToken,answerUUId);  
 		  
 		 AnswerDeleteResponse deleteResponse = new AnswerDeleteResponse();
 		 deleteResponse.setId(answerUUId);
@@ -86,9 +88,9 @@ public class AnswerController {
 	 
 	 @RequestMapping(value="/answer/all/{questionId}" , method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	 public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(@RequestHeader("authorization") final String accessToken,
-			 @PathVariable("questionId") String questionUUId ) throws AuthorizationFailedException {
+			 @PathVariable("questionId") String questionUUId ) throws AuthorizationFailedException, QuestionNotFoundException {
 		  
-		 List<AnswerEntity> allAnswers = answerService.getAllAnswers(accessToken,questionUUId);  
+		 List<AnswerEntity> allAnswers = answerService.getAllAnswers(accessToken,questionUUId);   
 		 
 		 List<AnswerDetailsResponse> detailsResponseList = new ArrayList<AnswerDetailsResponse>();
 		 

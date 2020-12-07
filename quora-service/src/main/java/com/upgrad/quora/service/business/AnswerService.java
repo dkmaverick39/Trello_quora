@@ -13,7 +13,9 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.QuestionNotFoundException;
 
 @Service
 public class AnswerService {
@@ -28,15 +30,15 @@ public class AnswerService {
 	@Autowired
 	private QuestionDao questionDao;
 	
-	public AnswerEntity createAnswer(String accessToken, String answer,String questionUUId) throws AuthorizationFailedException {
+	public AnswerEntity createAnswer(String accessToken, String answer,String questionUUId) throws AuthorizationFailedException, QuestionNotFoundException {
 		
 		 
 		//Check if the question with uuid exists or not 
 		// and accordingly throw exception
-		
+		 
 		QuestionEntity question = questionDao.getQuestionById(questionUUId); 
 		if(question == null) {
-			throw new AuthorizationFailedException("QUES-001", "The question entered is invalid");
+			throw new QuestionNotFoundException("QUES-001", "The question entered is invalid");
 		}
 		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken);
 		
@@ -66,11 +68,16 @@ public class AnswerService {
 	}
 	
 	
-	public AnswerEntity editAnswerContent(final String accessToken,final String answerUUId,String content) throws AuthorizationFailedException {
+	public AnswerEntity editAnswerContent(final String accessToken,final String answerUUId,String content) throws AuthorizationFailedException, AnswerNotFoundException {
 		
-		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken); 
+        AnswerEntity answerEntity =answerDao.getAnswerByUUId(answerUUId);
 		
-		if(userAuthByToken == null) {
+		if(answerEntity == null) {
+			throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+		}
+		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken);  
+		
+		if(userAuthByToken == null) {  
 			throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
 		}
 		if(userAuthByToken.getLogoutAt() != null) {
@@ -78,11 +85,7 @@ public class AnswerService {
         }
 
 		
-		AnswerEntity answerEntity =answerDao.getAnswerByUUId(answerUUId);
 		
-		if(answerEntity == null) {
-			throw new AuthorizationFailedException("ANS-001", "Entered answer uuid does not exist");
-		}
 		if(!answerEntity.getUser().getUuid().equals(userAuthByToken.getUserId().getUuid())) {
 			throw new AuthorizationFailedException("ATHR-003", "Only the answer owner can edit the answer");
 		}
@@ -101,11 +104,11 @@ public class AnswerService {
 	
 	
 	
-	public void deleteAnswer(final String accessToken, final String answerUUId) throws AuthorizationFailedException {
+	public void deleteAnswer(final String accessToken, final String answerUUId) throws AuthorizationFailedException, AnswerNotFoundException {
         
 		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken);  
 		
-		if(userAuthByToken == null) {
+		if(userAuthByToken == null) { 
 			throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
 		}
 		if(userAuthByToken.getLogoutAt() != null) {
@@ -116,7 +119,7 @@ public class AnswerService {
 		AnswerEntity answerEntity =answerDao.getAnswerByUUId(answerUUId);
 		
 		if(answerEntity == null) {
-			throw new AuthorizationFailedException("ANS-001", "Entered answer uuid does not exist");
+			throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
 		}
 		
 		if(!(answerEntity.getUser().getUuid().equals(userAuthByToken.getUserId().getUuid())
@@ -130,11 +133,11 @@ public class AnswerService {
 	
 	
 	
-	public List<AnswerEntity> getAllAnswers(final String accessToken , final String questionUUId) throws AuthorizationFailedException{
+	public List<AnswerEntity> getAllAnswers(final String accessToken , final String questionUUId) throws AuthorizationFailedException, QuestionNotFoundException{
 		
 		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken);   
 		
-		if(userAuthByToken == null) {
+		if(userAuthByToken == null) { 
 			throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
 		}
 		if(userAuthByToken.getLogoutAt() != null) {
@@ -145,7 +148,7 @@ public class AnswerService {
 		// if not throw exception
 		QuestionEntity question = questionDao.getQuestionById(questionUUId); 
 		if(question == null) {
-			throw new AuthorizationFailedException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+			throw new QuestionNotFoundException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
 		}
 		
 		List<AnswerEntity> allAnswersByQuestionId = answerDao.getAllAnswersByQuestionUUId(questionUUId); 

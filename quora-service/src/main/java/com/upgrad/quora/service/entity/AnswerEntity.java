@@ -20,7 +20,7 @@ import javax.validation.constraints.Size;
 @Table(name="answer")
 @NamedQueries ({
     @NamedQuery(name = "answerByUUId", query = "select u from AnswerEntity u where u.uuid = :uuid"),
-    //@NamedQuery(name = "answerByQuestionId", query = "select u from AnswerEntity u where u.question.id = :questionId"),
+    @NamedQuery(name = "answerByQuestionId", query = "select u from AnswerEntity u where u.question.id = :questionId"),
     @NamedQuery(name = "deleteAnswerByUUId", query = "delete from AnswerEntity u where u.uuid = :uuid")
 })
 public class AnswerEntity {

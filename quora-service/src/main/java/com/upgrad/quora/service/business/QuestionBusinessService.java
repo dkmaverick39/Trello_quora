@@ -78,6 +78,9 @@ public class QuestionBusinessService {
   public String deleteQuestion(String uuid, String accessToken) throws AuthorizationFailedException, InvalidQuestionException {
 
     QuestionEntity question = getQuestionById(uuid);
+    if(question == null) {
+    	throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+    }
     UserAuthEntity userAuthEntity = userBusinessService.getUserByToken(accessToken);
 
     String userRole = userAuthEntity.getUserId().getRole();
