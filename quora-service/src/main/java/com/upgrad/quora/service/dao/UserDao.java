@@ -82,4 +82,10 @@ public class UserDao {
                 .setParameter("logoutAt", logoutAt)
                 .executeUpdate();
     }
+
+	public void deleteUser(UserEntity user) { 
+		entityManager.remove(user); 
+ 	}
+    
+    
 }

@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.upgrad.quora.service.dao.AnswerDao;
+import com.upgrad.quora.service.dao.QuestionDao;
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.AnswerEntity;
+import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 
@@ -22,12 +24,20 @@ public class AnswerService {
 	@Autowired
 	private UserDao userDao;
 	
+	
+	@Autowired
+	private QuestionDao questionDao;
+	
 	public AnswerEntity createAnswer(String accessToken, String answer,String questionUUId) throws AuthorizationFailedException {
 		
 		 
 		//Check if the question with uuid exists or not 
 		// and accordingly throw exception
 		
+		QuestionEntity question = questionDao.getQuestionById(questionUUId); 
+		if(question == null) {
+			throw new AuthorizationFailedException("QUES-001", "The question entered is invalid");
+		}
 		UserAuthEntity userAuthByToken = userDao.getUserAuthByToken(accessToken);
 		
 		if(userAuthByToken == null) {
@@ -47,7 +57,7 @@ public class AnswerService {
 
 		answerEntity.setUser(userAuthByToken.getUserId()); 
 		
-		//answerEntity.setQuestion();
+		answerEntity.setQuestion(question);
 		
 		AnswerEntity savedAnswer = answerDao.saveAnswer(answerEntity);  
 		
@@ -80,8 +90,8 @@ public class AnswerService {
 		
 		answerEntity.setAnswer(content); 
 		
-		//ZonedDateTime currentTime = ZonedDateTime.now();
-		//answerEntity.setCreatedDate(currentTime); 
+		ZonedDateTime currentTime = ZonedDateTime.now();
+		answerEntity.setCreatedDate(currentTime); 
 
 		AnswerEntity savedAnswer = answerDao.saveAnswer(answerEntity);  
 		
@@ -133,6 +143,10 @@ public class AnswerService {
 
         //Check if questionUUId exists or not
 		// if not throw exception
+		QuestionEntity question = questionDao.getQuestionById(questionUUId); 
+		if(question == null) {
+			throw new AuthorizationFailedException("QUES-001", "The question with entered uuid whose details are to be seen does not exist");
+		}
 		
 		List<AnswerEntity> allAnswersByQuestionId = answerDao.getAllAnswersByQuestionUUId(questionUUId); 
 		return allAnswersByQuestionId;

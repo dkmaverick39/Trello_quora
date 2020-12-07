@@ -50,9 +50,9 @@ public class AnswerEntity {
 	 @JoinColumn(name = "USER_ID")
 	 private UserEntity user;
 	 
-//	 @ManyToOne
-//	 @JoinColumn(name = "QUESTION_ID")
-//	 private QuestionEntity question;
+	 @ManyToOne
+	 @JoinColumn(name = "QUESTION_ID")
+	 private QuestionEntity question;
 
 
 	public String getUuid() {
@@ -97,6 +97,21 @@ public class AnswerEntity {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+
+	public QuestionEntity getQuestion() {
+		return question;
+	}
+
+
+	public void setQuestion(QuestionEntity question) {
+		this.question = question;
+	}
+
+
+	public Integer getId() {
+		return id;
 	}
 
 

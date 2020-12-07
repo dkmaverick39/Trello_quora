@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,7 +33,8 @@ public class AnswerController {
 	 private AnswerService answerService;
 	 
 
-	@RequestMapping(value = "/question/{questionId}/answer/create", method = RequestMethod.POST)
+	@RequestMapping(value = "/question/{questionId}/answer/create", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerResponse> createAnswer(@RequestHeader("authorization") final String accessToken,
 			@PathVariable("questionId") String questionUUId, @RequestBody AnswerRequest answerRequest)
 			throws AuthorizationFailedException {
@@ -49,7 +51,8 @@ public class AnswerController {
 
 	}
 	
-	@RequestMapping(value = "/answer/edit/{answerId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/answer/edit/{answerId}", method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_UTF8_VALUE,
+			consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<AnswerEditResponse> editAnswerContent(
 			@RequestHeader("authorization") final String accessToken, @PathVariable("answerId") String answerId,
 			@RequestBody AnswerEditRequest editRequest) throws AuthorizationFailedException {
@@ -66,7 +69,7 @@ public class AnswerController {
 	 }
 	 
 	 
-	 @RequestMapping(value="/answer/delete/{answerId}" , method = RequestMethod.DELETE)
+	 @RequestMapping(value="/answer/delete/{answerId}" , method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	 public ResponseEntity<AnswerDeleteResponse> deleteAnswer(@RequestHeader("authorization") final String accessToken,
 			 @PathVariable("answerId") String answerUUId) throws AuthorizationFailedException {
 		 
@@ -81,7 +84,7 @@ public class AnswerController {
 	 }
 	 
 	 
-	 @RequestMapping(value="/answer/all/{questionId}" , method = RequestMethod.GET)
+	 @RequestMapping(value="/answer/all/{questionId}" , method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	 public ResponseEntity<List<AnswerDetailsResponse>> getAllAnswersToQuestion(@RequestHeader("authorization") final String accessToken,
 			 @PathVariable("questionId") String questionUUId ) throws AuthorizationFailedException {
 		  
@@ -94,7 +97,7 @@ public class AnswerController {
 			  AnswerDetailsResponse detailsResponse = new AnswerDetailsResponse();
 			  detailsResponse.setId(answerEntity.getUuid()); 
 			  detailsResponse.setAnswerContent(answerEntity.getAnswer()); 
-			 // detailsResponse.setQuestionContent(answerEntity.getQuestion().getText());
+			  detailsResponse.setQuestionContent(answerEntity.getQuestion().getContent()); 
 			  detailsResponseList.add(detailsResponse);
 		 }
 		  

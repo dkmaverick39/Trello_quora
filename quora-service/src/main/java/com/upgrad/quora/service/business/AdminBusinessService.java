@@ -1,11 +1,10 @@
 package com.upgrad.quora.service.business; 
  
 import com.upgrad.quora.service.dao.UserDao; 
-import com.upgrad.quora.service.entity.User; 
-import com.upgrad.quora.service.entity.UserAuthEntity; 
+import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException; 
 import com.upgrad.quora.service.exception.UserNotFoundException; 
-import com.upgrad.quora.service.util.QuoraUtil; 
 import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.stereotype.Service; 
 import org.springframework.transaction.annotation.Propagation; 
@@ -17,25 +16,33 @@ public class AdminBusinessService {
      @Autowired 
      private UserDao userDao; 
 
-     @Autowired 
-     private UserBusinessService userBusinessService; 
- 
  
      @Transactional(propagation = Propagation.REQUIRED) 
-     public String deleteUser(String userId, String authorization) throws AuthorizationFailedException, UserNotFoundException { 
-         final UserAuthEntity userAuthEntity = userBusinessService.validateUserAuthentication(authorization, 
-                 "User is signed out"); 
- 
- 
-          if (!QuoraUtil.ADMIN_ROLE.equalsIgnoreCase(userAuthEntity.getUser().getRole())) { 
+     public String deleteUser(String userUUId, String accessToken) throws AuthorizationFailedException, UserNotFoundException { 
+         
+    	 UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
+    	 
+    	 if(userAuthEntity == null) {
+             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+         }
+
+         if(userAuthEntity.getLogoutAt() != null) {
+             throw new AuthorizationFailedException("ATHR-002", "User is signed out");
+         }
+
+         if (!"ADMIN".equalsIgnoreCase(userAuthEntity.getUserId().getRole())) { 
              throw new AuthorizationFailedException("ATHR-003", "Unauthorized Access, Entered user is not an admin"); 
          } 
-         User user = userDao.getUserByUUID(userId); 
+         
+         UserEntity user = userDao.getUserById(userUUId); 
          if (user == null) { 
              throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist"); 
          } 
+         
          userDao.deleteUser(user); 
          return user.getUuid(); 
  
-     } 
+     }
+
+
 }
